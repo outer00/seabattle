@@ -12,22 +12,25 @@ class Field:
         if elem == 'radar':
             return self.radar
 
-    def draw_field(self, elem):
+    def draw_field(self, elem, loader):
         field = self.get_field_part(elem)
+        lbl = loader.cur_player_map if elem == 'map' else loader.cur_player_radar
+        lbl['text'] = ''
         for i in range(-1, self.size):
             for j in range(-1, self.size):
                 if i == -1 and j == -1:
-                    print('  ', end='')
+                    lbl['text'] += '   |'
                     continue
                 if i == -1:
-                    print(j + 1, end=' ')
+                    lbl['text'] += f'|   {j + 1}   |'
                     continue
                 if j == -1:
-                    print(Field.letters[i], end='')
+                    lbl['text'] += Field.letters[i] + ' |'
                     continue
-                print(' ' + str(field[i][j]), end='')
-            print()
-        print()
+                lbl['text'] += f'|   {field[i][j]}   |'
+            lbl['text'] += '\n====================================\n'
+        lbl['text'] += '\n'
+        print(lbl['text'])
 
     def check_ship_fits(self, ship, element):
         field = self.get_field_part(element)
@@ -44,7 +47,7 @@ class Field:
         for i in range(x - 1, x + height + 1):
             for j in range(y - 1, y + width + 1):
                 if 0 <= i < len(field) and 0 <= j < len(field):
-                    if str(field[i][j]) in ('■', 'X'):
+                    if str(field[i][j]) in ('S', 'X'):
                         return False
         return True
 

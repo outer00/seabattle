@@ -8,7 +8,7 @@ class Ship:
         self.set_rotation(rotation)
 
     def __str__(self):
-        return '■'
+        return 'S'
 
     def set_position(self, x, y, r):
         self.x = x
