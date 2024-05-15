@@ -9,7 +9,6 @@ class Loader:
         self.game = Game()
         self.game.status_check()
         self.root = tk.Tk()
-        self.root.state('zoomed')
         self.root.title('Морской бой')
         self.cnt_players = 0
         self.entry = ttk.Entry()
