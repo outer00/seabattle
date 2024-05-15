@@ -4,7 +4,7 @@ from Ship import *
 
 class Player:
     numbers_to_letters = [chr(i) for i in range(ord('A'), ord('J') + 1)]
-    letters_to_numbers = {chr(i): i-65 for i in range(ord('A'), ord('J') + 1)}
+    letters_to_numbers = {chr(i): i - 65 for i in range(ord('A'), ord('J') + 1)}
 
     def __init__(self, name):
         self.name = name
@@ -13,11 +13,11 @@ class Player:
         self.field = Field(10)
 
     @staticmethod
-    def get_input(typee):
+    def get_input(typee, loader):
         if typee == 'ship_setup':
-            print(
-                'Введите букву A-J (строку), 1-10 (столбец), 1-2 (1, если горизонтально, 2 если вертикально) через пробел.')
-            user_input = input().upper().split()
+            loader.context[
+                'text'] = 'Введите букву A-J (строку), 1-10 (столбец), 1-2 (1, если горизонтально, 2 если вертикально) через пробел.'
+            user_input = loader.entry.get().upper().split()
             if len(user_input) < 3:
                 return -1, -1, -1
             x, y, r = user_input[0], user_input[1], user_input[2]
@@ -28,14 +28,17 @@ class Player:
                 return -1, -1, -1
             return Player.letters_to_numbers[x], int(y) - 1, int(r)
         if typee == 'shot':
-            print('Введите букву A-J (строку), 1-10 (столбец) через пробел')
-            x, y = input().upper().split()
+            loader.context['text'] = 'Введите букву A-J (строку), 1-10 (столбец) через пробел'
+            user_input = loader.entry.get().upper().split()
+            if len(user_input) < 2:
+                return -1, -1
+            x, y = user_input[0], user_input[1]
             if (not x in Player.numbers_to_letters) or (not y.isdigit()) or (not int(y) in range(1, Game.field_sz + 1)):
                 return -1, -1
             return Player.letters_to_numbers[x], int(y) - 1
 
-    def make_shot(self, target_player):
-        sx, sy = self.get_input('shot')
+    def make_shot(self, target_player, loader):
+        sx, sy = self.get_input('shot', loader)
         if sx + sy == -2 or self.field.radar[sx][sy] != ' ':
             return 'retry'
         shot_res = target_player.receive_shot((sx, sy))
